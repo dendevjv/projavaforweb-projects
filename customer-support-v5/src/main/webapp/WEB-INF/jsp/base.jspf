@@ -1,0 +1,3 @@
+<%@ page import="projava4webbook.customer_support_v5.Ticket, projava4webbook.customer_support_v5.Attachment" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
