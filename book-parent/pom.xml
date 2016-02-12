@@ -91,5 +91,6 @@
     <module>template-tags</module>
     <module>filter-order</module>
     <module>filter-async</module>
+    <module>compression-logging-filter</module>
   </modules>
 </project>
