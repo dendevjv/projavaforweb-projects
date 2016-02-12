@@ -89,5 +89,6 @@
         <module>user-profile</module>
         <module>address-book</module>
     <module>template-tags</module>
+    <module>filter-order</module>
   </modules>
 </project>
