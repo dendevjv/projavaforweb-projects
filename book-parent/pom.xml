@@ -88,9 +88,10 @@
         <module>session-activity</module>
         <module>user-profile</module>
         <module>address-book</module>
-    <module>template-tags</module>
-    <module>filter-order</module>
-    <module>filter-async</module>
-    <module>compression-logging-filter</module>
+        <module>template-tags</module>
+        <module>filter-order</module>
+        <module>filter-async</module>
+        <module>compression-logging-filter</module>
+        <module>game-site-1</module>
   </modules>
 </project>
