@@ -93,5 +93,6 @@
         <module>filter-async</module>
         <module>compression-logging-filter</module>
         <module>game-site-1</module>
+        <module>simulated-cluster</module>
   </modules>
 </project>
