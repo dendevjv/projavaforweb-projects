@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration>
+<configuration status="WARN">
+    <Properties>
+        <!-- 
+            When starting in Eclipse use "logs" as baseDir, which will be created in Eclipse root folder.
+            The working directory may be set in Eclipse Run configuration for Tomcat.
+            When starting in Tomcat use "../logs" as baseDir.
+        -->
+        <Property name="baseDir">../logs</Property>
+        <Property name="appName">logging-integration-application</Property>
+    </Properties>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout
+                    pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+        <RollingFile name="Pj4wFileAppender" fileName="${baseDir}/${appName}.log"
+                     filePattern="${baseDir}/${appName}-%d{MM-dd-yyyy}-%i.log">
+            <PatternLayout>
+                <pattern>%d{HH:mm:ss.SSS} [%t] %X{id} %X{username} %-5level %l: %msg%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10 MB" />
+            </Policies>
+            <DefaultRolloverStrategy min="1" max="4" />
+        </RollingFile>
+    </Appenders>
+    <loggers>
+        <root level="warn">
+            <appender-ref ref="Console" />
+        </root>
+        <logger name="projava4webbook.loggingintegration" level="info" additivity="false">
+            <appender-ref ref="Pj4wFileAppender" />
+            <appender-ref ref="Console">
+                <MarkerFilter marker="PJ4W_CONSOLE" onMatch="NEUTRAL"
+                              onMismatch="DENY" />
+            </appender-ref>
+        </logger>
+        <logger name="org.apache" level="info">
+            <appender-ref ref="Pj4wFileAppender" />
+        </logger>
+    </loggers>
+</configuration>

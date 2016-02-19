@@ -81,6 +81,7 @@
             </plugin>
         </plugins>
     </build>
+    
     <modules>
         <module>hello-world</module>
         <module>hello-world-jsp</module>
@@ -94,5 +95,6 @@
         <module>compression-logging-filter</module>
         <module>game-site-1</module>
         <module>simulated-cluster</module>
+        <module>logging-integration</module>
   </modules>
 </project>
