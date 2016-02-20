@@ -2,12 +2,7 @@
 <!DOCTYPE configuration>
 <configuration status="WARN">
     <Properties>
-        <!-- 
-            When starting in Eclipse use "logs" as baseDir, which will be created in Eclipse root folder.
-            The working directory may be set in Eclipse Run configuration for Tomcat.
-            When starting in Tomcat use "../logs" as baseDir.
-        -->
-        <Property name="baseDir">../logs</Property>
+        <Property name="baseDir">$${sys:user.home}/opt/java-apps-logs</Property>
         <Property name="appName">logging-integration-application</Property>
     </Properties>
     <Appenders>
