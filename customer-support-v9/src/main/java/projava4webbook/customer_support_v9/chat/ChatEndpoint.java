@@ -25,6 +25,9 @@ import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import javax.websocket.server.ServerEndpointConfig;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * Receives chat connections and coordinates them.<br />
  * A new instance of this class is created at startup as a web listener, 
@@ -38,6 +41,8 @@ import javax.websocket.server.ServerEndpointConfig;
 )
 @WebListener
 public class ChatEndpoint implements HttpSessionListener {
+    
+    private static final Logger log = LogManager.getLogger();
     
     private static final String HTTP_SESSION_PROPERTY = "projava4webbook.ws.HTTP_SESSION";
     private static final String WS_SESSION_PROPERTY = "projava4webbook.http.WS_SESSION";
@@ -54,10 +59,12 @@ public class ChatEndpoint implements HttpSessionListener {
     
     @OnOpen
     public void onOpen(Session session, @PathParam("sessionId") long sessionId) {
+        log.entry(sessionId);
         HttpSession httpSession = (HttpSession) session.getUserProperties().get(ChatEndpoint.HTTP_SESSION_PROPERTY);
         
         try {
             if (httpSession == null || httpSession.getAttribute("username") == null) {
+                log.warn("Attempt to access chat server while logged out.");
                 session.close(new CloseReason(CloseReason.CloseCodes.VIOLATED_POLICY, "You are not logged in!"));
                 return;
             }
@@ -71,6 +78,7 @@ public class ChatEndpoint implements HttpSessionListener {
             
             ChatSession chatSession;
             if (sessionId < 1) {
+                log.debug("User starting char {} is {}.", sessionId, username);
                 message.setType(ChatMessage.Type.STARTED);
                 message.setContent(username + " started the chat session.");
                 
@@ -85,6 +93,7 @@ public class ChatEndpoint implements HttpSessionListener {
                 pendingSessions.add(chatSession);
                 chatSessions.put(chatSession.getSessionId(), chatSession);
             } else {
+                log.debug("User joining char {} is {}.", sessionId, username);
                 message.setType(ChatMessage.Type.JOINED);
                 message.setContent(username + " joined the chat session.");
                 
@@ -102,8 +111,11 @@ public class ChatEndpoint implements HttpSessionListener {
             getSessionsFor(httpSession).add(session);
             chatSession.log(message);
             chatSession.getCustomer().getBasicRemote().sendObject(message);
+            log.debug("onOpen completed successfully for chat {}.", sessionId);
         } catch (IOException | EncodeException e) {
             this.onError(session, e);
+        } finally {
+            log.exit();
         }
     }
     
@@ -114,6 +126,7 @@ public class ChatEndpoint implements HttpSessionListener {
      */
     @OnMessage
     public void onMessage(Session session, ChatMessage message) {
+        log.entry();
         ChatSession c = sessions.get(session);
         Session other = getOtherSession(c, session);
         if (c != null && other != null) {
@@ -124,7 +137,10 @@ public class ChatEndpoint implements HttpSessionListener {
             } catch (IOException | EncodeException e) {
                 this.onError(session, e);
             }
+        } else {
+            log.warn("Chat message received with only one chat member.");
         }
+        log.exit();
     }
     
     @OnClose
@@ -143,13 +159,16 @@ public class ChatEndpoint implements HttpSessionListener {
                     other.close();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                log.warn("Problem closing companion chat session.", e); 
             }
+        } else {
+            log.warn("Abnormal closure {} for reason [{}].", reason.getCloseCode(), reason.getReasonPhrase());
         }
     }
     
     @OnError
     public void onError(Session session, Throwable e) {
+        log.warn("Error received in WebSocket session.", e);
         ChatMessage message = new ChatMessage();
         message.setUser((String) session.getUserProperties().get("username"));
         message.setType(ChatMessage.Type.ERROR);
@@ -167,6 +186,7 @@ public class ChatEndpoint implements HttpSessionListener {
                 session.close(new CloseReason(CloseReason.CloseCodes.UNEXPECTED_CONDITION, e.toString()));
             } catch (IOException ignore) {
             }
+            log.exit();
         }
     }
 
@@ -178,6 +198,7 @@ public class ChatEndpoint implements HttpSessionListener {
     @Override
     public void sessionDestroyed(HttpSessionEvent se) {
         HttpSession httpSession = se.getSession();
+        log.entry(httpSession.getId());
         if (httpSession.getAttribute(WS_SESSION_PROPERTY) != null) {
             ChatMessage message = new ChatMessage();
             message.setUser((String)httpSession.getAttribute("username"));
@@ -186,6 +207,8 @@ public class ChatEndpoint implements HttpSessionListener {
             message.setContent(message.getUser() + " logged out.");
             
             for (Session session : new ArrayList<>(getSessionsFor(httpSession))) {
+                log.info("Closing chat session {} belonging to HTTP session {}.", 
+                        session.getId(), httpSession.getId());
                 try {
                     session.getBasicRemote().sendObject(message);
                     Session other = close(session, message); 
@@ -193,7 +216,7 @@ public class ChatEndpoint implements HttpSessionListener {
                         other.close();
                     }
                 } catch (IOException | EncodeException e) {
-                    e.printStackTrace();
+                    log.warn("Problem closing companion chat session.");
                 } finally {
                     try {
                         session.close();
@@ -208,6 +231,7 @@ public class ChatEndpoint implements HttpSessionListener {
 
     @SuppressWarnings("unchecked")
     private synchronized ArrayList<Session> getSessionsFor(HttpSession httpSession) {
+        log.entry();
         try {
             if (httpSession.getAttribute(WS_SESSION_PROPERTY) == null) {
                 httpSession.setAttribute(WS_SESSION_PROPERTY, new ArrayList<Session>());
@@ -215,10 +239,13 @@ public class ChatEndpoint implements HttpSessionListener {
             return (ArrayList<Session>) httpSession.getAttribute(WS_SESSION_PROPERTY);
         } catch (IllegalStateException e) {
             return new ArrayList<>();
+        } finally {
+            log.exit();
         }
     }
     
     private Session close(Session wsSession, ChatMessage message) {
+        log.entry(wsSession);
         ChatSession chatSession = sessions.get(wsSession);
         Session otherWsSession = getOtherSession(chatSession, wsSession);
         HttpSession httpSession = httpSessions.get(wsSession);
@@ -232,8 +259,7 @@ public class ChatEndpoint implements HttpSessionListener {
             try {
                 chatSession.writeChatLog(new File("chat." + chatSession.getSessionId() + ".log"));
             } catch (Exception e) {
-                System.err.println("Could not write chat log");
-                e.printStackTrace();
+                log.error("Could not write chat log due to error.", e);
             }
         }
         if (otherWsSession != null) {
@@ -245,15 +271,16 @@ public class ChatEndpoint implements HttpSessionListener {
             try {
                 otherWsSession.getBasicRemote().sendObject(message);
             } catch (IOException | EncodeException e) {
-                e.printStackTrace();
+                log.warn("Problem closing companion chat session.", e);
             }
         }
-        return otherWsSession;
+        return log.exit(otherWsSession);
     }
     
     private Session getOtherSession(ChatSession c,  Session s) {
-        return c == null ? null :
-            (s == c.getCustomer() ? c.getRepresentative() : c.getCustomer());
+        log.entry();
+        return log.exit(c == null ? null :
+            (s == c.getCustomer() ? c.getRepresentative() : c.getCustomer()));
     }
     
     /**
@@ -263,9 +290,10 @@ public class ChatEndpoint implements HttpSessionListener {
     public static class EndpointConfigurator extends ServerEndpointConfig.Configurator {
         @Override
         public void modifyHandshake(ServerEndpointConfig config, HandshakeRequest request, HandshakeResponse response) {
+            log.entry();
             super.modifyHandshake(config, request, response);
-            
             config.getUserProperties().put(ChatEndpoint.HTTP_SESSION_PROPERTY, request.getHttpSession());
+            log.exit();
         }
     }
 }

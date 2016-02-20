@@ -8,6 +8,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,6 +31,8 @@ import java.util.Map;
 )
 public class TicketServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
+    
+    private static final Logger log = LogManager.getLogger();
 
     private volatile int TICKET_ID_SEQUENCE = 1;
 
@@ -35,6 +41,7 @@ public class TicketServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        log.debug("GET request received");
         String action = request.getParameter("action");
         if(action == null) {
             action = "list";
@@ -59,6 +66,7 @@ public class TicketServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        log.debug("POST request received");
         String action = request.getParameter("action");
         if(action == null) {
             action = "list";
@@ -83,6 +91,7 @@ public class TicketServlet extends HttpServlet {
                             HttpServletResponse response)
             throws ServletException, IOException {
         String idString = request.getParameter("ticketId");
+        log.entry(idString);
         Ticket ticket = this.getTicket(idString, response);
         if(ticket == null)
             return;
@@ -90,12 +99,14 @@ public class TicketServlet extends HttpServlet {
         request.setAttribute("ticketId", idString);
         request.setAttribute("ticket", ticket);
         request.getRequestDispatcher("/WEB-INF/jsp/view/viewTicket.jsp").forward(request, response);
+        log.exit();
     }
 
     private void downloadAttachment(HttpServletRequest request,
                                     HttpServletResponse response)
             throws ServletException, IOException {
         String idString = request.getParameter("ticketId");
+        log.entry(idString);
         Ticket ticket = this.getTicket(idString, response);
         if(ticket == null)
             return;
@@ -108,6 +119,7 @@ public class TicketServlet extends HttpServlet {
 
         Attachment attachment = ticket.getAttachment(name);
         if(attachment == null) {
+            log.info("Requested attachment {} not found on ticket {}.", name, idString);
             response.sendRedirect("tickets?action=view&ticketId=" + idString);
             return;
         }
@@ -118,10 +130,12 @@ public class TicketServlet extends HttpServlet {
 
         ServletOutputStream stream = response.getOutputStream();
         stream.write(attachment.getContents());
+        log.exit();
     }
 
     private void listTickets(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        log.debug("Listing tickets.");
         request.setAttribute("ticketDatabase", ticketDatabase);
         request.getRequestDispatcher("/WEB-INF/jsp/view/listTickets.jsp").forward(request, response);
     }
@@ -129,6 +143,7 @@ public class TicketServlet extends HttpServlet {
     private void createTicket(HttpServletRequest request,
                               HttpServletResponse response)
             throws ServletException, IOException {
+        log.entry();
         Ticket ticket = new Ticket();
         ticket.setCustomerName((String) request.getSession().getAttribute("username"));
         ticket.setSubject(request.getParameter("subject"));
@@ -137,6 +152,7 @@ public class TicketServlet extends HttpServlet {
 
         Part filePart = request.getPart("file1");
         if(filePart != null && filePart.getSize() > 0) {
+            log.debug("Processing attachment for new ticket.");
             ticket.addAttachment(this.buildAttachment(filePart));
         }
 
@@ -147,11 +163,13 @@ public class TicketServlet extends HttpServlet {
         }
 
         response.sendRedirect("tickets?action=view&ticketId=" + id);
+        log.exit();
     }
 
     /** Builds attachment object using submitted file name and received bytes. */
     private Attachment buildAttachment(Part filePart)
             throws IOException {
+        log.entry(filePart);
         InputStream inputStream = filePart.getInputStream();
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
@@ -166,11 +184,12 @@ public class TicketServlet extends HttpServlet {
         attachment.setName(filePart.getSubmittedFileName());
         attachment.setContents(outputStream.toByteArray());
 
-        return attachment;
+        return log.exit(attachment);
     }
 
     private Ticket getTicket(String idString, HttpServletResponse response)
             throws ServletException, IOException {
+        log.entry(idString);
         if(idString == null || idString.length() == 0) {
             response.sendRedirect("tickets");
             return null;
@@ -180,13 +199,13 @@ public class TicketServlet extends HttpServlet {
             Ticket ticket = this.ticketDatabase.get(Integer.parseInt(idString));
             if(ticket == null) {
                 response.sendRedirect("tickets");
-                return null;
+                return log.exit(null);
             }
-            return ticket;
+            return log.exit(ticket);
         }
         catch(Exception e) {
             response.sendRedirect("tickets");
-            return null;
+            return log.exit(null);
         }
     }
 }
