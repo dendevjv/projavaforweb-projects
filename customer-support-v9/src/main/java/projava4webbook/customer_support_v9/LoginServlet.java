@@ -31,9 +31,7 @@ public class LoginServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
         if (req.getParameter("logout") != null) {
-            if (log.isDebugEnabled()) {
-                log.info("User {} logged out.", session.getAttribute("username"));
-            }
+            log.info("User {} logged out.", session.getAttribute("username"));
             session.invalidate();
             resp.sendRedirect("login");
             return;
