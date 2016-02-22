@@ -98,5 +98,6 @@
         <module>simulated-cluster</module>
         <module>logging-integration</module>
         <module>spring-one-context-xml-config</module>
+        <module>spring-xml-config</module>
     </modules>
 </project>
