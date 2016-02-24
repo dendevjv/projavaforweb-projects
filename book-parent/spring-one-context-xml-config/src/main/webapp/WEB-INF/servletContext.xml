@@ -9,7 +9,8 @@
 
         <mvc:annotation-driven />
         
-        <bean name="greetingServiceImpl" class="projava4webbook.spring_one_context_xml_config.GreetingServiceImpl" />
+        <!-- <bean name="greetingServiceImpl" class="projava4webbook.spring_one_context_xml_config.GreetingServiceImpl" />  -->
+        <bean name="greetingServiceImpl" class="projava4webbook.spring_one_context_xml_config.StudyGreetingServiceImpl" />
         
         <bean name="helloController" class="projava4webbook.spring_one_context_xml_config.HelloController" >
             <property name="greetingService" ref="greetingServiceImpl" />

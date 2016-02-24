@@ -19,12 +19,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.1</version>
-            <scope>test</scope>
-        </dependency>
 
         <dependency>
             <groupId>junit</groupId>
@@ -71,6 +65,9 @@
 
         <!-- Ch.12 - Introducing Spring Framework -->
         <dependency>
+            <!-- Java EE annotations: 
+            @javax.inject.Inject is synonymous with @Autowired,
+            @javax.inject.Named is the equivalent of @Qualifier -->
             <groupId>javax.inject</groupId>
             <artifactId>javax.inject</artifactId>
             <version>1</version>

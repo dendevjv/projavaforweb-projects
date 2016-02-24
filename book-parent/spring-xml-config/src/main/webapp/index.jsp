@@ -1,6 +1,6 @@
 <html>
 <body>
-    <h2>Spring-one-context-xml-config</h2>
+    <h2>Spring-xml-config</h2>
     
     <p>1) Go to a simple <a href="hello">hello</a> page</p>
     
