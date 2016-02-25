@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration>
+<configuration status="WARN">
+    <Properties>
+        <Property name="baseDir">$${sys:user.home}/opt/java-apps-logs</Property>
+        <Property name="appName">spring-java-config-app</Property>
+    </Properties>
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %location{36} - %msg%n"/>
+        </Console>
+        <RollingFile name="Pj4wFileAppender" fileName="${baseDir}/${appName}.log"
+                     filePattern="${baseDir}/${appName}-%d{MM-dd-yyyy}-%i.log">
+            <PatternLayout>
+                <pattern>%d{HH:mm:ss.SSS} [%t] %X{id} %X{username} %-5level %l: %msg%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="5 MB" />
+            </Policies>
+            <DefaultRolloverStrategy min="1" max="4" />
+        </RollingFile>
+    </Appenders>
+    <loggers>
+        <root level="warn">
+            <appender-ref ref="Console" />
+            <appender-ref ref="Pj4wFileAppender" />
+        </root>
+        <logger name="projava4webbook" level="info" />
+        <logger name="org.apache" level="info" />
+        <logger name="org.springframework" level="info" />
+    </loggers>
+</configuration>

@@ -99,5 +99,6 @@
         <module>spring-one-context-xml-config</module>
         <module>spring-xml-config</module>
         <module>spring-hybrid-config</module>
+        <module>spring-java-config</module>
   </modules>
 </project>
