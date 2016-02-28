@@ -101,5 +101,6 @@
         <module>spring-hybrid-config</module>
         <module>spring-java-config</module>
         <module>model-view-controller</module>
+        <module>spring-forms</module>
   </modules>
 </project>

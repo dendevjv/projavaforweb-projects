@@ -1,0 +1,20 @@
+<%--@elvariable id="userForm" type="projava4webbook.spring_forms.site.UserForm" --%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<!DOCTYPE html>
+<html>
+	<head>
+	   <title>${title}</title>
+	</head>
+	<body>
+	   <h1>${title}</h1>
+	   <form:form method="post" modelAttribute="userForm">
+	       <form:label path="username">Username</form:label><br />
+	       <form:input path="username"/><br />
+	       <br />
+	       <form:label path="name"></form:label><br />
+	       <form:input path="name"/><br />
+	       <br />
+	       <input type="submit" value="Save" />
+	   </form:form>
+	</body>
+</html>
