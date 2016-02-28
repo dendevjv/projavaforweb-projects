@@ -1,0 +1,10 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html>
+<html>
+<body>
+	<h2>Model-View-Controller</h2>
+	
+	<p><a href="<c:url value="/" />">/</a></p>
+	<p><a href="<c:url value="/dashboard" />">/dashboard</a></p>
+</body>
+</html>
