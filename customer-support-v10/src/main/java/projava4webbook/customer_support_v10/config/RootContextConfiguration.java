@@ -28,7 +28,7 @@ public class RootContextConfiguration {
     @Bean
     public Jaxb2Marshaller jaxb2Marshaller() {
         Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
-        marshaller.setPackagesToScan(new String[] { "com.wrox.site" });
+        marshaller.setPackagesToScan(new String[] { "projava4webbook.customer_support_v10.site" });
         return marshaller;
     }
 }

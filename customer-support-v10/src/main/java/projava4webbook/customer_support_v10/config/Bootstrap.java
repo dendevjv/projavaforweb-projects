@@ -14,6 +14,10 @@ import org.springframework.web.servlet.DispatcherServlet;
 import projava4webbook.customer_support_v10.site.AuthenticationFilter;
 import projava4webbook.customer_support_v10.site.LoggingFilter;
 
+/**
+ * Starts Spring Framework, which is configured with two @Configuration classes, 
+ * <code>RootContextConfiguration</code> and <code>ServletContextConfiguration</code>.
+ */
 public class Bootstrap implements WebApplicationInitializer {
 
     @Override
@@ -43,8 +47,8 @@ public class Bootstrap implements WebApplicationInitializer {
         registration.addMappingForUrlPatterns(null, false, "/*");
         
         registration = container.addFilter("authenticationFilter", new AuthenticationFilter());
-        registration.addMappingForUrlPatterns(null, false, "/sessions", "/sessions/*", "/chat", "/chat/*", "/tickets",
-                "/tickets/*");
+        registration.addMappingForUrlPatterns(null, false, "/session", "/session/*", "/chat", "/chat/*", "/ticket",
+                "/ticket/*");
     }
 
 }

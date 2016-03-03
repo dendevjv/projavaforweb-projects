@@ -18,7 +18,7 @@ public class LoggingFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response,
                          FilterChain chain) throws IOException, ServletException {
         boolean clear = false;
-        if(!ThreadContext.containsKey("id")) {
+        if(!ThreadContext.containsKey("id")) {  // this check is absent in example code
             clear = true;
             ThreadContext.put("id", UUID.randomUUID().toString());
             HttpSession session = ((HttpServletRequest)request).getSession(false);

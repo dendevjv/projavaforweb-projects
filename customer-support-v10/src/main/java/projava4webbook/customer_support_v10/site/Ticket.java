@@ -1,20 +1,31 @@
 package projava4webbook.customer_support_v10.site;
 
-import java.time.OffsetDateTime;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Ticket {
+    private long id;
+    
     private String customerName;
 
     private String subject;
 
     private String body;
     
-    private OffsetDateTime dateCreated;
+//    private OffsetDateTime dateCreated;
+    private Instant dateCreated;
 
     private Map<String, Attachment> attachments = new LinkedHashMap<>();
+    
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getCustomerName() {
         return customerName;
@@ -57,11 +68,11 @@ public class Ticket {
     }
 
     
-    public OffsetDateTime getDateCreated() {
+    public Instant getDateCreated() {
         return dateCreated;
     }
 
-    public void setDateCreated(OffsetDateTime dateCreated) {
+    public void setDateCreated(Instant dateCreated) {
         this.dateCreated = dateCreated;
     }
     

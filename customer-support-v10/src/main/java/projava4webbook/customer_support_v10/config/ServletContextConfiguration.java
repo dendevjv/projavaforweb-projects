@@ -83,6 +83,9 @@ public class ServletContextConfiguration extends WebMvcConfigurerAdapter {
                 .mediaType("json", MediaType.APPLICATION_JSON);
     }
     
+    /**
+     * Creates a <code>ViewResolver</code> instance that can match a view name to an actual view.
+     */
     @Bean
     public ViewResolver viewResolver() {
         InternalResourceViewResolver resolver = new InternalResourceViewResolver();
@@ -92,6 +95,11 @@ public class ServletContextConfiguration extends WebMvcConfigurerAdapter {
         return resolver;
     }
     
+    /**
+     * Creates a bean that translates the request into a view name. 
+     * Strips off the web application context URL and any file extension at the end of the URL.
+     * It used if the controller method returns a model or model attribute instead of a view or view name.
+     */
     @Bean
     public RequestToViewNameTranslator viewNameTranslator() {
         return new DefaultRequestToViewNameTranslator();

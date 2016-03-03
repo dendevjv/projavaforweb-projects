@@ -3,6 +3,8 @@ package projava4webbook.customer_support_v10.site;
 public class Attachment {
     private String name;
 
+    private String mimeContentType;
+
     private byte[] contents;
 
     public String getName() {
@@ -11,6 +13,14 @@ public class Attachment {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getMimeContentType() {
+        return mimeContentType;
+    }
+
+    public void setMimeContentType(String mimeContentType) {
+        this.mimeContentType = mimeContentType;
     }
 
     public byte[] getContents() {
