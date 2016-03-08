@@ -1,12 +1,11 @@
 package projava4webbook.customer_support_v11.site;
 
 import java.io.IOException;
-import java.time.Instant;
-import java.util.LinkedHashMap;
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpSession;
+import javax.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,14 +23,13 @@ import org.springframework.web.servlet.view.RedirectView;
 public class TicketController {
     private static final Logger log = LogManager.getLogger();
     
-    private volatile int TICKET_ID_SEQUENCE = 1;
-
-    private Map<Long, Ticket> ticketDatabase = new LinkedHashMap<>();
+    @Inject
+    TicketService ticketService;
     
     @RequestMapping(value = {"", "list"}, method=RequestMethod.GET)
     public String list(Map<String, Object> model) {
         log.debug("Listing tickets.");
-        model.put("ticketDatabase", ticketDatabase);
+        model.put("tickets", ticketService.getAllTickets());
         
         return "ticket/list";
     }
@@ -39,7 +37,7 @@ public class TicketController {
     @RequestMapping(value = "view/{ticketId}", method=RequestMethod.GET)
     public ModelAndView view(Map<String, Object> model,
             @PathVariable("ticketId") long ticketId) {
-        Ticket ticket = this.ticketDatabase.get(ticketId);
+        Ticket ticket = ticketService.getTicket(ticketId);
         if (ticket == null) {
             log.error("Can not retrieve ticket with id={}", ticketId);
             return getListRedirectModelAndView();
@@ -57,7 +55,7 @@ public class TicketController {
     public View download(
             @PathVariable("ticketId") long ticketId, 
             @PathVariable("attachment") String name) {
-        Ticket ticket = this.ticketDatabase.get(ticketId);
+        Ticket ticket = ticketService.getTicket(ticketId);
         if (ticket == null) {
             log.error("Can not retrieve ticket with id={}", ticketId);
             return getListRedirectView();
@@ -79,13 +77,11 @@ public class TicketController {
     }
     
     @RequestMapping(value="create", method=RequestMethod.POST)
-    public View create(HttpSession session, Form form) throws IOException {
+    public View create(Principal principal, Form form) throws IOException {
         Ticket ticket = new Ticket();
-        ticket.setId(getNextTicketId());
-        ticket.setCustomerName((String) session.getAttribute("username"));
+        ticket.setCustomerName(principal.getName());
         ticket.setSubject(form.getSubject());
         ticket.setBody(form.getBody());
-        ticket.setDateCreated(Instant.now());
         
         for (MultipartFile filePart : form.getAttachments()) {
             log.debug("Processing attachment for new ticket.");
@@ -100,7 +96,7 @@ public class TicketController {
             }
         }
         
-        this.ticketDatabase.put(ticket.getId(), ticket);
+        ticketService.save(ticket);
         
         return new RedirectView("/ticket/view/" + ticket.getId(), true, false);
     }
@@ -113,10 +109,6 @@ public class TicketController {
         return new RedirectView("/ticket/list", true, false);
     }
 
-    private synchronized long getNextTicketId() {
-        return this.TICKET_ID_SEQUENCE++;
-    }
-    
     public static class Form {
         private String subject;
         private String body;

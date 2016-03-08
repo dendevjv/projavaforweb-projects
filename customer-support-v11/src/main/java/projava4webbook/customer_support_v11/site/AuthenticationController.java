@@ -1,8 +1,9 @@
 package projava4webbook.customer_support_v11.site;
 
-import java.util.Hashtable;
+import java.security.Principal;
 import java.util.Map;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -18,27 +19,26 @@ import org.springframework.web.servlet.view.RedirectView;
 @Controller
 public class AuthenticationController {
     private static final Logger log = LogManager.getLogger();
-    private static final Map<String, String> userDatabase = new Hashtable<>();
-    
-    static {
-        userDatabase.put("Nick", "miller");
-        userDatabase.put("Jess", "teacher");
-        userDatabase.put("Couch", "teacher");
-    }
+
+    @Inject
+    AuthenticationService authenticationService; 
     
     @RequestMapping("logout")
-    public View logout(HttpSession session) {
-        log.info("User {} logged out.", session.getAttribute("username"));
+    public View logout(HttpServletRequest request, HttpSession session) {
+        if (log.isDebugEnabled() && request.getUserPrincipal() != null) {
+            log.debug("User {} logged out.", request.getUserPrincipal().getName());
+        }
         session.invalidate();
         
         return new RedirectView("/login", true, false);
     }
     
     @RequestMapping(value = "login", method = RequestMethod.GET)
-    public ModelAndView loginPage(Map<String, Object> model, HttpSession session) {
-        if (session.getAttribute("username") != null) {
+    public ModelAndView login(Map<String, Object> model, HttpSession session) {
+        if (UserPrincipal.getPrincipal(session) != null) {
             return getTicketRedirect();
         }
+        
         model.put("loginFailed", false);
         model.put("loginForm", new Form());
         
@@ -46,28 +46,22 @@ public class AuthenticationController {
     }
     
     @RequestMapping( value = "login", method = RequestMethod.POST)
-    public ModelAndView login(
-            Map<String, Object> model,
-            HttpSession session,
-            HttpServletRequest request,
-            Form form) {
-        if (form.getUsername() == null 
-                || form.getPassword() == null 
-                || !userDatabase.containsKey(form.getUsername()) 
-                || !form.getPassword().equals(userDatabase.get(form.getUsername()))) { 
-            log.warn("Login failed for user {}.", form.getUsername());
-            
+    public ModelAndView login(Map<String, Object> model, HttpSession session,
+            HttpServletRequest request, Form form) {
+        if (UserPrincipal.getPrincipal(session) != null) {
+            return getTicketRedirect();
+        }
+        
+        Principal principal = authenticationService.authenticate(form.getUsername(), form.getPassword());
+        
+        if (principal == null) { 
             form.setPassword(null);
             model.put("loginFailed", true);
             model.put("loginForm", form);
-            
             return new ModelAndView("login");
         } else {
-            log.info("User {} successfully logged in.", form.getUsername());
-            
-            session.setAttribute("username", form.getUsername());
+            UserPrincipal.setPrincipal(session, principal);
             request.changeSessionId();
-            
             return getTicketRedirect();
         }
     }

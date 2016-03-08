@@ -13,6 +13,7 @@ import org.springframework.web.servlet.DispatcherServlet;
 
 import projava4webbook.customer_support_v11.site.AuthenticationFilter;
 import projava4webbook.customer_support_v11.site.LoggingFilter;
+import projava4webbook.customer_support_v11.site.SessionListener;
 
 /**
  * Starts Spring Framework, which is configured with two @Configuration classes, 
@@ -29,6 +30,7 @@ public class Bootstrap implements WebApplicationInitializer {
         AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
         rootContext.register(RootContextConfiguration.class);
         container.addListener(new ContextLoaderListener(rootContext));
+        container.addListener(SessionListener.class);
         
         AnnotationConfigWebApplicationContext servletContext = new AnnotationConfigWebApplicationContext();
         servletContext.register(ServletContextConfiguration.class);

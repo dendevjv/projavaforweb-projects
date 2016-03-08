@@ -36,7 +36,7 @@
                 var modalErrorBody = $("#modalErrorBody");
                 var chatLog = $('#chatLog');
                 var messageArea = $('#messageArea');
-                var username = '${sessionScope.username}';
+                var username = '${pageContext.request.userPrincipal.name}';
                 var otherJoined = false;
 
                 if(!("WebSocket" in window)) {

@@ -1,18 +1,18 @@
 package projava4webbook.customer_support_v11.site.chat;
 
-import java.time.OffsetDateTime;
+import java.time.Instant;
 
 public class ChatMessage {
-    private OffsetDateTime timestamp;
+    private Instant timestamp;
     private Type type;
     private String user;
     private String content;
 
-    public OffsetDateTime getTimestamp() {
+    public Instant getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(OffsetDateTime timestamp) {
+    public void setTimestamp(Instant timestamp) {
         this.timestamp = timestamp;
     }
 

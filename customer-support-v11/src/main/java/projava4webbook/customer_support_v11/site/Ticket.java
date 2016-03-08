@@ -14,7 +14,6 @@ public class Ticket {
 
     private String body;
     
-//    private OffsetDateTime dateCreated;
     private Instant dateCreated;
 
     private Map<String, Attachment> attachments = new LinkedHashMap<>();
