@@ -29,16 +29,6 @@ import org.springframework.web.servlet.view.JstlView;
         includeFilters = @ComponentScan.Filter(Controller.class)
 )
 public class ServletContextConfiguration extends WebMvcConfigurerAdapter {
-    @Override
-    public void configureMessageConverters(
-            List<HttpMessageConverter<?>> converters
-    ) {
-        converters.add(new ByteArrayHttpMessageConverter());
-        converters.add(new StringHttpMessageConverter());
-        converters.add(new FormHttpMessageConverter());
-        converters.add(new SourceHttpMessageConverter<>());
-
-    }
 
     /**
      * Sets up the locale resolver which is used by <code>DispatcherServlet</code> for
