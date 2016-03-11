@@ -104,5 +104,6 @@
         <module>spring-forms</module>
     <module>discussion-boar</module>
     <module>discussion-board</module>
+    <module>localized-application</module>
   </modules>
 </project>
