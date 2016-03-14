@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration>
+<configuration status="WARN">
+	<Properties>
+        <Property name="baseDir">$${sys:user.home}/opt/java-apps-logs</Property>
+        <Property name="appName">customer-support-app</Property>
+    </Properties>
+    <appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <!-- 
+            <PatternLayout
+                    pattern="%d{HH:mm:ss.SSS} [%t] %-5level %location{36} - %msg%n"/>
+             -->
+            <PatternLayout>
+                <pattern>%d{HH:mm:ss.SSS} [%t] %X{id} %X{username} %-5level %location: %msg%n</pattern>
+            </PatternLayout>
+        </Console>
+        <RollingFile name="PjfwFileAppender" fileName="${baseDir}/${appName}.log"
+                     filePattern="${baseDir}/${appName}-%d{MM-dd-yyyy}-%i.log">
+            <PatternLayout>
+                <pattern>%d{HH:mm:ss.SSS} [%t] %X{id} %X{username} %-5level %c{36} %location: %msg%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10 MB" />
+            </Policies>
+            <DefaultRolloverStrategy min="1" max="4" />
+        </RollingFile>
+    </appenders>
+    <loggers>
+        <root level="warn">
+            <appender-ref ref="Console" />
+            <appender-ref ref="PjfwFileAppender" />
+        </root>
+        <logger name="projava4webbook" level="info">
+        </logger>
+        <logger name="org.apache" level="info">
+        </logger>
+    </loggers>
+</configuration>
+
