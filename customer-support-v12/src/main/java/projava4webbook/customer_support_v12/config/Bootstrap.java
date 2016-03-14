@@ -49,8 +49,7 @@ public class Bootstrap implements WebApplicationInitializer {
         registration.addMappingForUrlPatterns(null, false, "/*");
         
         registration = container.addFilter("authenticationFilter", new AuthenticationFilter());
-        registration.addMappingForUrlPatterns(null, false, "/session", "/session/*", "/chat", "/chat/*", "/ticket",
-                "/ticket/*");
+        registration.addMappingForUrlPatterns(null, false, "/ticket", "/ticket/*", "/chat", "/chat/*", "/session", "/session/*");
     }
 
 }
