@@ -1,10 +1,14 @@
 package projava4webbook.customer_support_v12.config;
 
+import java.nio.charset.StandardCharsets;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Controller;
@@ -26,6 +30,15 @@ public class RootContextConfiguration
     private static final Logger log = LogManager.getLogger();
     private static final Logger schedulingLogger =
             LogManager.getLogger(log.getName() + ".[scheduling]");
+    
+    @Bean
+    public MessageSource messageSource() {
+        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+        messageSource.setCacheSeconds(-1);
+        messageSource.setDefaultEncoding(StandardCharsets.UTF_8.name());
+        messageSource.setBasenames("/WEB-INF/i18n/titles", "/WEB-INF/i18n/messages", "/WEB-INF/i18n/errors");
+        return messageSource;
+    }
     
     @Bean
     public ObjectMapper objectMapper() {
