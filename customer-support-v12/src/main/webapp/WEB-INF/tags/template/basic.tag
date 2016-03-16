@@ -11,7 +11,6 @@
         <jsp:invoke fragment="extraHeadContent" />
     </jsp:attribute>
     <jsp:attribute name="navigationContent">
-    <spring:message code="" />
         <a href="<c:url value="/ticket/list" />"><spring:message code="nav.item.list.tickets" /></a><br />
         <a href="<c:url value="/ticket/create" />"><spring:message code="nav.item.create.ticket" /></a><br />
         <a href="javascript:void 0;"
