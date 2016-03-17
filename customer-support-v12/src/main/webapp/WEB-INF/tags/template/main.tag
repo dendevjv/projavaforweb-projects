@@ -37,6 +37,9 @@
     </head>
     <body>
         <h1><spring:message code="title.company" /></h1>
+        
+        <p><a href="?locale=en_US">En</a> | <a href="?locale=ru">Ru</a></p>
+        
         <table id="bodyTable">
             <tbody>
                 <tr>

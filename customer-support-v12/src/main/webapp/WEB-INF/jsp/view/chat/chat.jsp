@@ -53,24 +53,38 @@
                 infoMessage('<spring:message code="message.chat.connecting" javaScriptEscape="true" />');
                 
                 var messageContent = function(message) {
+               		var result;
+                	if (message.userContent && message.userContent != null &&
+                            message.userContent.length > 0) {
+                		result = message.userContent;
+                	} else if (message.localizedContent && message.localizedContent != null &&
+                			message.localizedContent.length > 0){
+                		result = message.localizedContent;
+                	} else {
+                		result = message.content;
+                	}
+                	return result;
+                	/*
                     return message.userContent && message.userContent != null &&
                             message.userContent.length > 0 ?
                             message.userContent : message.localizedContent;
+                            */
                 };
 
                 var objectMessage = function(message) {
                     var log = $('<div>');
                     var date = message.timestamp == null ? '' :
                             moment.unix(message.timestamp).format('h:mm:ss a');
+                    var msgContent = messageContent(message);
                     if(message.user != null) {
                         var c = message.user == username ? 'user-me' : 'user-you';
                         log.append($('<span>').addClass(c)
                                         .text(date+' '+message.user+':\xA0'))
-                                .append($('<span>').text(messageContent(message)));
+                                .append($('<span>').text(msgContent));
                     } else {
                         log.addClass(message.type == 'ERROR' ? 'error' :
                                 'informational')
-                                .text(date + ' ' + messageContent(message));
+                                .text(date + ' ' + msgContent);
                     }
                     chatLog.append(log);
                 };
