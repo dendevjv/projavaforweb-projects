@@ -64,11 +64,6 @@
                 		result = message.content;
                 	}
                 	return result;
-                	/*
-                    return message.userContent && message.userContent != null &&
-                            message.userContent.length > 0 ?
-                            message.userContent : message.localizedContent;
-                            */
                 };
 
                 var objectMessage = function(message) {
