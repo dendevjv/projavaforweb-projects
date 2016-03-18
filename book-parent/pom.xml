@@ -105,5 +105,6 @@
         <module>discussion-board</module>
         <module>localized-application</module>
         <module>hr-portal</module>
+        <module>custom-constraint</module>
   </modules>
 </project>
