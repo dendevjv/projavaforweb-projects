@@ -104,5 +104,6 @@
         <module>spring-forms</module>
         <module>discussion-board</module>
         <module>localized-application</module>
+        <module>hr-portal</module>
   </modules>
 </project>
