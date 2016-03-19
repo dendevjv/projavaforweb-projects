@@ -17,8 +17,7 @@ public class NotBlankValidator implements ConstraintValidator<NotBlank, CharSequ
         } else {
             trimmed = value.toString().trim();
         }
-        boolean valid = trimmed.length() > 0;
-        return valid;
+        return trimmed.length() > 0;
     }
 
 }
