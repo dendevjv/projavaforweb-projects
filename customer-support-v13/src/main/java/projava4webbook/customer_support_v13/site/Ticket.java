@@ -5,17 +5,25 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javax.validation.Valid;
+
+import projava4webbook.customer_support_v13.validation.NotBlank;
+
 public class Ticket {
     private long id;
     
+    @NotBlank(message = "{validate.ticket.customerName}")
     private String customerName;
 
+    @NotBlank(message = "{validate.ticket.subject}")
     private String subject;
 
+    @NotBlank(message = "{validate.ticket.body}")
     private String body;
     
     private Instant dateCreated;
 
+    @Valid
     private Map<String, Attachment> attachments = new LinkedHashMap<>();
     
     public long getId() {

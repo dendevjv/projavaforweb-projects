@@ -1,0 +1,24 @@
+Changes in Customer-Support-v13 checklist
+-----------------------------------------
++ pom.xml -- validation-api, hibernate-validator, hibernate-validator-annotation-processor, jboss-logging
++ RootContextConfiguration -- @Bean public LocalValidatorFactoryBean localValidatorFactoryBean()
++ RootContextConfiguration -- @Bean public MethodValidationPostProcessor methodValidationPostProcessor()
++ RootContextConfiguration -- add base name "validation" to message source
++ ServletContextConfiguration -- @Inject SpringValidatorAdapter validator
++ validation.Email
++ validation.NotBlank
++ validation.NotBlankValidator
++ main.css -- class errors
++ validation.properties
+
++ AuthenticationService -- @Validated, methods constraint annotations
++ AuthenticationController.LoginForm -- constraint annotations
++ AuthenticationController -- submit methods use the Errors object and  ConstraintViolationException
++ login.jsp -- <form:errors>, <%--@elvariable id="validationErrors" --%>
+
++ Attachment -- constraint annotations
++ Ticket -- @Valid annotation, fields constraint annotations
++ TicketService -- @Validated, methods constraint annotations
++ TicketController.TicketForm -- constraint annotations
++ TicketController -- submit methods use the Errors object and  ConstraintViolationException
++ ticket/add.jsp -- <form:errors>, <%--@elvariable id="validationErrors" --%>

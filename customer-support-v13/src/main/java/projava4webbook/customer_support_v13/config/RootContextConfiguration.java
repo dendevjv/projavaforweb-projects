@@ -12,6 +12,8 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,8 +38,36 @@ public class RootContextConfiguration
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setCacheSeconds(-1);
         messageSource.setDefaultEncoding(StandardCharsets.UTF_8.name());
-        messageSource.setBasenames("/WEB-INF/i18n/titles", "/WEB-INF/i18n/messages", "/WEB-INF/i18n/errors");
+        messageSource.setBasenames("/WEB-INF/i18n/titles", "/WEB-INF/i18n/messages", "/WEB-INF/i18n/errors", "/WEB-INF/i18n/validation");
         return messageSource;
+    }
+    
+    /**
+     * Configures Spring Validator Bean.<br />
+     * <br />
+     * The <code>LocalValidatorFactoryBean</code> automatically detects the Bean Validation implementation on
+     * the classpath, whether that’s Hibernate Validator or some other implementation, and uses its default
+     * <code>javax.validation.ValidatorFactory</code> as the backing factory.<br />
+     * <br />
+     * Configures the <code>LocalValidatorFactoryBean</code> to use <code>MessageSource</code> bean. 
+     */
+    @Bean
+    public LocalValidatorFactoryBean localValidatorFactoryBean() {
+        LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
+        validator.setValidationMessageSource(this.messageSource());
+        return validator;
+    }
+    
+    /**
+     * Creates instance of <code>MethodValidationPostProcessor</code> to support validation
+     * of method arguments and return values.<br />
+     * Configures it to use the <code>LocalValidatorFactoryBean</code> created earlier.
+     */
+    @Bean
+    public MethodValidationPostProcessor methodValidationPostProcessor() {
+        MethodValidationPostProcessor processor = new MethodValidationPostProcessor();
+        processor.setValidator(this.localValidatorFactoryBean());
+        return processor;
     }
     
     @Bean

@@ -15,6 +15,7 @@
         <jackson.version>2.4.2</jackson.version>
         <log4j.version>2.5</log4j.version>
         <spring.framework.version>4.2.4.RELEASE</spring.framework.version>
+        <hibernate.validator.version>5.2.4.Final</hibernate.validator.version>
     </properties>
 
     <dependencies>
@@ -186,6 +187,43 @@
             <artifactId>spring-websocket</artifactId>
             <version>${spring.framework.version}</version>
             <scope>compile</scope>
+        </dependency>
+        
+        <!-- Ch.16 Validation -->
+        
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>1.1.0.Final</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${hibernate.validator.version}</version>
+            <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jboss.logging</groupId>
+                    <artifactId>jboss-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator-annotation-processor</artifactId>
+            <version>${hibernate.validator.version}</version>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
+            <version>3.2.0.Beta1</version>
+            <scope>runtime</scope>
         </dependency>
     </dependencies>
 

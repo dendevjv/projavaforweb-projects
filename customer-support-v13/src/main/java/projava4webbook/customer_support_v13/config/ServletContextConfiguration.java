@@ -36,6 +36,8 @@ import org.springframework.web.servlet.view.JstlView;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.Validator;
+import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 
 @Configuration
 @EnableWebMvc
@@ -51,6 +53,8 @@ public class ServletContextConfiguration extends WebMvcConfigurerAdapter {
     Marshaller marshaller;
     @Inject 
     Unmarshaller unmarshaller;
+    @Inject 
+    SpringValidatorAdapter validator;
     
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
@@ -85,6 +89,16 @@ public class ServletContextConfiguration extends WebMvcConfigurerAdapter {
                 .useJaf(false).defaultContentType(MediaType.APPLICATION_XML)
                 .mediaType("xml", MediaType.APPLICATION_XML)
                 .mediaType("json", MediaType.APPLICATION_JSON);
+    }
+    
+    /** 
+     * Overrides <code>WebMvcConfigurerAdapter</code>’s <code>getValidator</code> method  
+     * which returns Spring <code>Validator</code> instance in order to return 
+     * the validator created and configured in the root application context.  
+     */
+    @Override
+    public Validator getValidator() {
+        return this.validator;
     }
   
     /**
